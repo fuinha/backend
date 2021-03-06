@@ -31,7 +31,7 @@ export const AppModule = (dbURL: string, redis: string): any => {
 				url: dbURL,
 				entities: [User, Pet, Vaccination, Reminder, Scan, Event, Contact, Vet],
 				synchronize: true,
-				ssl: true,
+				// ssl: true,
 				extra: {
 					ssl: true,
 				},
