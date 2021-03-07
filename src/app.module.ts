@@ -20,6 +20,14 @@ import { Pet } from './pet/pet'
 import { Vet } from './vet/vet'
 import { ContactService } from './contact/service/contact.service'
 import { ContactModule } from './contact/contact.module'
+import { AuthModule } from './auth/auth.module'
+import {
+	FirebaseAdminModule,
+	FirebaseAuthenticationService,
+} from '@aginix/nestjs-firebase-admin'
+import * as admin from 'firebase-admin'
+import { APP_GUARD } from '@nestjs/core'
+import { AuthGuard } from './auth/guard/auth.guard'
 
 export const AppModule = (dbURL: string, redis: string): any => {
 	@Global()
@@ -31,11 +39,12 @@ export const AppModule = (dbURL: string, redis: string): any => {
 				url: dbURL,
 				entities: [User, Pet, Vaccination, Reminder, Scan, Event, Contact, Vet],
 				synchronize: true,
-				ssl: true,
-				extra: { ssl: true, rejectUnauthorized: false },
-				// extra: {
-				// 	ssl: true,
-				// },
+				...(process.env.NODE_ENV === 'production'
+					? {
+							ssl: true,
+							extra: { ssl: true, rejectUnauthorized: false },
+					  }
+					: {}),
 			}),
 			GraphQLModule.forRoot({
 				playground: true,
@@ -54,9 +63,21 @@ export const AppModule = (dbURL: string, redis: string): any => {
 			ScanModule,
 			VetModule,
 			ContactModule,
+			AuthModule,
+			FirebaseAdminModule.forRootAsync({
+				useFactory: () => ({
+					credential: admin.credential.cert(JSON.parse(process.env.admin)),
+				}),
+			}),
 		],
 		controllers: [],
-		providers: [],
+		providers: [
+			{
+				provide: APP_GUARD,
+				useClass: AuthGuard,
+			},
+			// FirebaseAuthenticationService,
+		],
 	})
 	abstract class BaseAppModule {}
 
