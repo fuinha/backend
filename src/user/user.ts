@@ -16,9 +16,11 @@ export class User {
 	@Field()
 	id: string
 
+	@Field(() => [Pet])
 	@OneToMany(() => Pet, (p) => p.owner)
 	ownedPets: Pet[]
 
+	@Field(() => [Pet])
 	@ManyToMany(() => Pet, (p) => p.caretakers)
 	caretakingPets: Pet[]
 }
