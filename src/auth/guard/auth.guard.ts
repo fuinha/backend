@@ -18,19 +18,23 @@ export class AuthGuard implements CanActivate {
 		if (context.getType<GqlContextType>() === 'graphql') {
 			const ctx = GqlExecutionContext.create(context)
 			console.log(ctx.getContext().req.get('token'))
-			try {
-				const z = await this.auth.verifyIdToken(
-					ctx.getContext().req.get('token')
-				)
+			// console.log( === 'pet')
+			if (!['pet'].includes(ctx.getInfo().fieldName)) {
+				try {
+					const z = await this.auth.verifyIdToken(
+						ctx.getContext().req.get('token')
+					)
 
-				if (z.uid) {
-					return true
+					if (z.uid) {
+						return true
+					}
+				} catch (e) {
+					throw new Error(e)
 				}
-			} catch (e) {
-				throw new Error(e)
+				return false
+			} else {
+				return true
 			}
 		}
-
-		return false
 	}
 }
