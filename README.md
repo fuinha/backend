@@ -23,6 +23,7 @@ $ yarn
 Set `redis` and `db` to the URLs of your instances (for instance, `redis` might be something like `redis://localhost:9998/`, and `db` might be `postgres://postgres@localhost:7823/postgres`) in environment settings
 
 ### Example `.env` file:
+
 ```dotenv
 db="postgres://postgres@localhost:7823/postgres"
 redis="redis://localhost:9998/"
