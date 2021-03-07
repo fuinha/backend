@@ -1,7 +1,5 @@
 FROM node:14
 
-RUN npm install -g yarn
-
 # Create app directory
 WORKDIR /usr/src/app
 
