@@ -17,3 +17,4 @@ dist/
 Dockerfile
 Procfile
 captain-definition
+.dockerignore
